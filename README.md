@@ -9,7 +9,7 @@ SimpleSAMLphp
 
 * Cloner le projet : 
 ```
-git clone https://github.com/Elipce-Informatique/simplesamlphp.git /home/__user__/sso --depth=1
+git clone https://github.com/Elipce-Informatique/simplesamlphp.git /home/elipce/sso --depth=1
 ```
 * Mettre à jour les dépendances :
 ```
@@ -21,13 +21,13 @@ cd /var/simplesamlphp & composer update
 * Ajouter un hôte virtuel Apache dans `/etc/apache2/sites-enabled` :
 ```
 <VirtualHost *:80>
-    DocumentRoot /home/__user__/sso/www
+    DocumentRoot /home/elipce/sso/www
     ServerName  mondomaine.com
 
     ErrorLog /var/log/apache2/mondomaine.com_error.log
     CustomLog /var/log/apache2/mondomaine.com_access.log combined
 
-    <Directory /home/__user__/sso/www/>
+    <Directory /home/elipce/sso/www/>
        Options -Indexes
        AllowOverride None
     </Directory>
@@ -41,7 +41,7 @@ cd /var/simplesamlphp & composer update
 
 #### Configuration générale
 
-*Les fichiers de configuration se trouvent dans `./configuration`.*
+*Les fichiers de configuration se trouvent dans `./config`.*
 
 * Générer un hash :
 ```
