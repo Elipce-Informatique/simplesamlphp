@@ -30,6 +30,7 @@ cd /var/simplesamlphp & composer update
     <Directory /home/elipce/sso/www/>
        Options -Indexes
        AllowOverride None
+       DirectoryIndex /module.php/core/frontpage_welcome.php
     </Directory>
     
 </VirtualHost>
