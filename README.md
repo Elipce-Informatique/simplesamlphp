@@ -9,7 +9,7 @@ SimpleSAMLphp
 
 * Cloner le projet : 
 ```
-git clone https://github.com/Elipce-Informatique/simplesamlphp.git /var/simplesamlphp --depth=1
+git clone https://github.com/Elipce-Informatique/simplesamlphp.git /home/__user__/sso --depth=1
 ```
 * Mettre à jour les dépendances :
 ```
@@ -20,13 +20,18 @@ cd /var/simplesamlphp & composer update
 
 * Ajouter un hôte virtuel Apache dans `/etc/apache2/sites-enabled` :
 ```
-<VirtualHost *>
-        ServerName service.example.com
-        DocumentRoot /var/www/service.example.com
+<VirtualHost *:80>
+    DocumentRoot /home/__user__/sso/www
+    ServerName  mondomaine.com
 
-        SetEnv SIMPLESAMLPHP_CONFIG_DIR /var/simplesamlphp/config
+    ErrorLog /var/log/apache2/mondomaine.com_error.log
+    CustomLog /var/log/apache2/mondomaine.com_access.log combined
 
-        Alias /simplesaml /var/simplesamlphp/www
+    <Directory /home/__user__/sso/www/>
+       Options -Indexes
+       AllowOverride None
+    </Directory>
+    
 </VirtualHost>
 ```
 * Générer un certificat SSL :
@@ -36,11 +41,11 @@ cd /var/simplesamlphp & composer update
 
 #### Configuration générale
 
-*Les fichiers de configuration se trouvent dans `/var/simplesamlphp/configuration`.*
+*Les fichiers de configuration se trouvent dans `./configuration`.*
 
 * Générer un hash :
 ```
-/var/simplesamlphp/bin/pwgen.php
+./bin/pwgen.php
 ```
 * Définir un mot de passe administrateur pour l'interface web :
 ```
@@ -48,7 +53,7 @@ cd /var/simplesamlphp & composer update
 ```
 * Ajouter le chemin vers la racine :
 ```
-'baseurlpath' => 'simplesaml/',
+'baseurlpath' => '/',
 ```
 * Générer un sel aléatoire :
 ```
@@ -69,18 +74,18 @@ tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1
 
 #### Activer un module
  
-*Dans SimpleSamlPhp, chaque fonctionnalité fait l'objet d'un module. Tous les modules sont regroupés dans le repertoire `/var/simplesamlphp/modules`. Par défaut certains modules ne sont pas activés.*
+*Dans SimpleSamlPhp, chaque fonctionnalité fait l'objet d'un module. Tous les modules sont regroupés dans le repertoire `./modules`. Par défaut certains modules ne sont pas activés.*
 
 * Pour activer un plugin :
 ```
-touch /var/simplesamlphp/modules/mon_module/enable
+touch ./modules/mon_module/enable
 ```
  
 ## Création d'un IdP
 
 #### Configurer le module d'authentification
 
-* Editer le fichier `config/authsources.php` :
+* Editer le fichier `./config/authsources.php` :
 ```
 <?php
 $config = array(
@@ -122,8 +127,8 @@ $metadata['__DYNAMIC:1__'] = array(
      * The private key and certificate to use when signing responses.
      * These are stored in the cert-directory.
      */
-    'privatekey' => 'example.org.pem',
-    'certificate' => 'example.org.crt',
+    'privatekey' => 'mondomaine.com.pem',
+    'certificate' => 'mondomaine.com.crt',
 
     /*
      * The authentication source which should be used to authenticate the
@@ -135,8 +140,8 @@ $metadata['__DYNAMIC:1__'] = array(
 
 * Copier la clé privée et le certificat public :
 ```
-cp /etc/letsencrypt/live/mon_domaine/privkey.pem /var/simplesamlphp/cert/mon_domaine.pem
-cp /etc/letsencrypt/live/mon_domaine/fullchain.pem /var/simplesamlphp/cert/mon_domaine.crt
+cp /etc/letsencrypt/live/mondomaine.com/privkey.pem /var/simplesamlphp/cert/mondomaine.com.pem
+cp /etc/letsencrypt/live/mondomaine.com/fullchain.pem /var/simplesamlphp/cert/mondomaine.com.crt
 ```
 * Changer la méthode d'authentification utilisée :
 ```
@@ -158,7 +163,7 @@ cp /etc/letsencrypt/live/mon_domaine/fullchain.pem /var/simplesamlphp/cert/mon_d
 
 #### Ajouter des fournisseurs de service
 
-*Le fournisseur d'identité a besoin de connaitre les fournisseurs de service qui vont s'y connecter. La déclaration se fait dans les fichiers suivants : `metadata/saml20-sp-remote.php`.*
+*Le fournisseur d'identité a besoin de connaitre les fournisseurs de service qui vont s'y connecter. La déclaration se fait dans les fichiers suivants : `./metadata/saml20-sp-remote.php`.*
 
 * Pour configurer un nouveau fournisseur de service :
 ```
@@ -193,7 +198,7 @@ CREATE TABLE users (
     UNIQUE KEY `UE` (`email`)
     )
 ```
-* Configurer la source d'authentification dans `/var/simplesamlphp/confif/authsources.php` :
+* Configurer la source d'authentification dans `./config/authsources.php` :
 ```
 'selfregister-mysql' => array(
     'sqlauth:SQL',
@@ -210,7 +215,7 @@ CREATE TABLE users (
                     )',
     ),
 ```
-* Mettre à jour le mapping des attributs dans `/var/simplesamlphp/confif/authsources.php` :
+* Mettre à jour le mapping des attributs dans `./config/authsources.php` :
 ```
 'authproc' => array(
 
@@ -222,7 +227,7 @@ CREATE TABLE users (
         'firstname' => 'givenName',
     ),
 ```
-* Configurer les envois de mail dans le fichier `/var/simplesamlphp/modules/selfregister/config-templates/module_selfregister.php`.
+* Configurer les envois de mail dans le fichier `./modules/selfregister/config-templates/module_selfregister.php`.
 
 ## Liens utiles
 * [Documentation officielle](https://simplesamlphp.org/docs/stable/)
