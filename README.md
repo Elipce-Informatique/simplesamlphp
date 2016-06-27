@@ -3,7 +3,7 @@ SimpleSAMLphp
 
 *SimpleSamlPhp est une application PHP composée de modules qui permet de fédérer des utilisateurs de différents services en ligne à travers le protocole SAML.*
 
-### Installation générale
+## Installation générale
 
 #### Récupération des sources
 
@@ -18,7 +18,7 @@ cd /var/simplesamlphp & composer update
 
 #### Configurer Apache
 
-* Ajouter un hôte virtuel Apache :
+* Ajouter un hôte virtuel Apache dans `/etc/apache2/sites-enabled` :
 ```
 <VirtualHost *>
         ServerName service.example.com
@@ -29,16 +29,203 @@ cd /var/simplesamlphp & composer update
         Alias /simplesaml /var/simplesamlphp/www
 </VirtualHost>
 ```
+* Générer un certificat SSL :
+```
+ cd /home/letsencrypt & ./letsencrypt-auto
+```
 
 #### Configuration générale
 
-**Les fichiers de configuration se trouvent dans `/var/simplesamlphp/configuration`.**
+*Les fichiers de configuration se trouvent dans `/var/simplesamlphp/configuration`.*
 
+* Générer un hash :
+```
+/var/simplesamlphp/bin/pwgen.php
+```
 * Définir un mot de passe administrateur pour l'interface web :
-  * Générer un hash : `/var/simplesamlphp/bin/pwgen.php`
-  * Modifier le mot de passe : `'auth.adminpassword' => 'setnewpasswordhere',`
+```
+'auth.adminpassword' => 'setnewpasswordhere',
+```
+* Ajouter le chemin vers la racine :
+```
+'baseurlpath' => 'simplesaml/',
+```
+* Générer un sel aléatoire :
+```
+tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null;echo
+```
+* Copier le sel généré dans la configuration :
+```
+'secretsalt' => 'randombytesinsertedhere',
+```
+* Remplir les autres informations :
+```
+'technicalcontact_name'     => 'Andreas Åkre Solberg',
+'technicalcontact_email'    => 'andreas.solberg@uninett.no',
+...
 
-### Création d'un IdP
+'language.default'      => 'fr',
+```
 
+#### Activer un module
+ 
+*Dans SimpleSamlPhp, chaque fonctionnalité fait l'objet d'un module. Tous les modules sont regroupés dans le repertoire `/var/simplesamlphp/modules`. Par défaut certains modules ne sont pas activés.*
 
-### Liens utiles
+* Pour activer un plugin :
+```
+touch /var/simplesamlphp/modules/mon_module/enable
+```
+ 
+## Création d'un IdP
+
+#### Configurer le module d'authentification
+
+* Editer le fichier `config/authsources.php` :
+```
+<?php
+$config = array(
+    'example-userpass' => array(
+        'exampleauth:UserPass',
+        'student:studentpass' => array(
+            'uid' => array('student'),
+            'eduPersonAffiliation' => array('member', 'student'),
+        ),
+        'employee:employeepass' => array(
+            'uid' => array('employee'),
+            'eduPersonAffiliation' => array('member', 'employee'),
+        ),
+    ),
+);
+```
+
+Plusieurs méthodes sont disponibles sous forme de modules à activer :
+* LinkedIn
+* Facebook
+* Twitter
+* Base de données
+* LDAP
+
+#### Configurer l'IdP
+
+*Le fournisseur d'identité est configuré les fichiers `/var/simplesamlphp/metadata/saml20-idp-hosted.php`.*
+```
+<?php
+$metadata['__DYNAMIC:1__'] = array(
+    /*
+     * The hostname for this IdP. This makes it possible to run multiple
+     * IdPs from the same configuration. '__DEFAULT__' means that this one
+     * should be used by default.
+     */
+    'host' => '__DEFAULT__',
+
+    /*
+     * The private key and certificate to use when signing responses.
+     * These are stored in the cert-directory.
+     */
+    'privatekey' => 'example.org.pem',
+    'certificate' => 'example.org.crt',
+
+    /*
+     * The authentication source which should be used to authenticate the
+     * user. This must match one of the entries in config/authsources.php.
+     */
+    'auth' => 'example-userpass',
+);
+```
+
+* Copier la clé privée et le certificat public :
+```
+cp /etc/letsencrypt/live/mon_domaine/privkey.pem /var/simplesamlphp/cert/mon_domaine.pem
+cp /etc/letsencrypt/live/mon_domaine/fullchain.pem /var/simplesamlphp/cert/mon_domaine.crt
+```
+* Changer la méthode d'authentification utilisée :
+```
+'auth' => 'example-userpass',
+```
+* Configurer le mapping des attributs :
+```
+ 'attributes.NameFormat' => 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri',
+        'authproc' => array(
+            10 => array(
+                'class' => 'core:AttributeMap',
+                'userid'    => 'uid',
+                'email'     => 'mail',
+                'lastname'  => 'sn',
+                'firstname' => 'givenName',
+            ),
+        ),
+```
+
+#### Ajouter des fournisseurs de service
+
+*Le fournisseur d'identité a besoin de connaitre les fournisseurs de service qui vont s'y connecter. La déclaration se fait dans les fichiers suivants : `metadata/saml20-sp-remote.php`.*
+
+* Pour configurer un nouveau fournisseur de service :
+```
+<?php
+$metadata['https://sp.example.org/simplesaml/module.php/saml/sp/metadata.php/default-sp'] = array(
+    'AssertionConsumerService' => 'https://sp.example.org/simplesaml/module.php/saml/sp/saml2-acs.php/default-sp',
+    'SingleLogoutService'      => 'https://sp.example.org/simplesaml/module.php/saml/sp/saml2-logout.php/default-sp',
+);
+```
+
+#### Configurer l'inscription
+*L'inscription est gérée par le module `selfregister` et doit impérativement être configuré avant d'être activé.* 
+
+* Créer la base de données :
+```
+CREATE DATABASE identities;
+GRANT ALL on identities.* to 'user'@'localhost' IDENTIFIED by '1234';
+FLUSH PRIVILEGES;
+```
+* Créer la table SQL :
+```
+CREATE TABLE users (
+    `userid` varchar(32) NOT NULL,
+    `password` text NOT NULL,
+    `salt` blob,
+    `firstname` text,
+    `lastname` text,
+    `created` datetime NOT NULL,
+    `email` varchar(255) NOT NULL,
+    `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`userid`),
+    UNIQUE KEY `UE` (`email`)
+    )
+```
+* Configurer la source d'authentification dans `/var/simplesamlphp/confif/authsources.php` :
+```
+'selfregister-mysql' => array(
+    'sqlauth:SQL',
+        'dsn' => 'mysql:host=localhost;dbname=identites',
+        'username' => 'user',
+        'password' => '1234',
+        'query' => 'SELECT userid, firstname, lastname, email FROM users WHERE userid = :username
+                    AND password = SHA2 (
+                        CONCAT(
+                            (SELECT salt FROM users WHERE userid = :username),
+                            :password
+                        ),
+                        512
+                    )',
+    ),
+```
+* Mettre à jour le mapping des attributs dans `/var/simplesamlphp/confif/authsources.php` :
+```
+'authproc' => array(
+
+    10 => array(
+        'class' => 'core:AttributeMap',
+        'userid'    => 'uid',
+        'email'     => 'mail',
+        'lastname'  => 'sn',
+        'firstname' => 'givenName',
+    ),
+```
+* Configurer les envois de mail dans le fichier `/var/simplesamlphp/modules/selfregister/config-templates/module_selfregister.php`.
+
+## Liens utiles
+* [Documentation officielle](https://simplesamlphp.org/docs/stable/)
+* [Modules disponibles](https://simplesamlphp.org/modules)
+* [Dépôt OneLogin PHP SAML](https://github.com/onelogin/php-saml)
+* [SAML pour les nuls](https://blog.surf.nl/en/saml-for-dummies/)
