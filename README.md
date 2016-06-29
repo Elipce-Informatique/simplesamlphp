@@ -192,7 +192,7 @@ FLUSH PRIVILEGES;
 * Créer la table SQL :
 ```
 CREATE TABLE users (
-    `userid` int(32) NOT NULL AUTO_INCREMENT,
+    `userid` int(10) NOT NULL AUTO_INCREMENT,
     `password` text NOT NULL,
     `salt` blob,
     `firstname` text,
@@ -211,10 +211,10 @@ CREATE TABLE users (
         'dsn' => 'mysql:host=localhost;dbname=identites',
         'username' => 'user',
         'password' => '1234',
-        'query' => 'SELECT userid, firstname, lastname, email FROM users WHERE userid = :username
+        'query' => 'SELECT userid, firstname, lastname, email FROM users WHERE email = :username
                     AND password = SHA2 (
                         CONCAT(
-                            (SELECT salt FROM users WHERE userid = :username),
+                            (SELECT salt FROM users WHERE email = :username),
                             :password
                         ),
                         512
@@ -246,11 +246,11 @@ cp ./modules/selfregister/config-templates/module_selfregister.php ./config
 'mail.subject'  => 'Vérification E-mail',
 
 'sql' => array(
-    'user.id.param' => 'email',
+    'user.id.param' => 'userid',
 ),
 
 'attributes'  => array(
-    'username'      => 'mail',
+    'username'      => 'uid',
     'firstname'     => 'givenName',
     'lastname'      => 'sn',
     'email'         => 'mail',
