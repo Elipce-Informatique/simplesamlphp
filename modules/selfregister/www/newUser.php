@@ -98,7 +98,7 @@ if(array_key_exists('emailreg', $_REQUEST)) {
 <head>
 	<meta charset="utf-8">
 	<meta name="robots" content="noindex">
-	<title>Email envoyé</title>
+	<title>Nouveau compte</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" href="<?= SimpleSAML_Module::getModuleURL('selfregister/img/favicon.ico') ?>" />
 	<!-- CSS -->
