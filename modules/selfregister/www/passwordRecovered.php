@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="robots" content="noindex">
-	<title>Email envoyé</title>
+	<title>Compte créé</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="icon" href="<?= SimpleSAML_Module::getModuleURL('selfregister/img/favicon.ico') ?>" />
 	<!-- CSS -->
@@ -19,7 +19,7 @@
 				 src="<?= SimpleSAML_Module::getModuleURL('selfregister/img/logo.jpg') ?>"/>
 			<div class="jumbotron text-center">
 				<h1><span class="glyphicon glyphicon-ok"></span></h1>
-				<p>Un email vous a été envoyé !</p>
+				<p>Votre mot de passe a bien été changé !</p>
 				<strong>
 					<a class="pull-right" href="<?= SimpleSAML_Module::getModuleURL('selfregister/index.php') ?>">Retour</a>
 				</strong>

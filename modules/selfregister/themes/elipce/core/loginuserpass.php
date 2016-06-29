@@ -70,7 +70,8 @@
                         </div>
                     </div>
                     <div class="row">
-                        <a href="" class="btn btn-link pull-right">Mot de passe oublié ?</a>
+                        <a href="<?= SimpleSAML_Module::getModuleURL('selfregister/lostPassword.php') ?>"
+                           class="btn btn-link pull-right">Mot de passe oublié ?</a>
                     </div>
                     <hr class="colorgraph">
                     <div class="row">
