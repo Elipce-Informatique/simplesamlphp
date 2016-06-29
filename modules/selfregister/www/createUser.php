@@ -156,7 +156,8 @@ if (array_key_exists('token', $_GET)) {
                             <span class="glyphicon glyphicon-envelope"></span>
                         </div>
                         <input type="email" name="mail" id="mail" class="form-control input-lg"
-                               value="<?= $values['mail'] ?>" disabled>
+                               value="<?= $values['mail'] ?>" required readonly>
+                        <input type="hidden" id="uid" name="uid" value="test" size="20">
                         <input type="hidden" name="emailconfirmed" id="emailconfirmed" value="<?= $values['mail'] ?>">
                         <input type="hidden" name="token" id="token" value="<?= $values['token'] ?>">
                     </div>
