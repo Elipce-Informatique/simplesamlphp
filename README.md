@@ -9,11 +9,11 @@ SimpleSAMLphp
 
 * Cloner le projet : 
 ```
-git clone https://github.com/Elipce-Informatique/simplesamlphp.git /home/elipce/sso --depth=1
+git clone https://github.com/Elipce-Informatique/simplesamlphp.git /home/__user__/sso --depth=1
 ```
 * Mettre à jour les dépendances :
 ```
-cd /var/simplesamlphp & composer update
+cd /home/__user__/sso & composer update
 ```
 
 #### Configurer Apache
@@ -21,13 +21,13 @@ cd /var/simplesamlphp & composer update
 * Ajouter un hôte virtuel Apache dans `/etc/apache2/sites-enabled` :
 ```
 <VirtualHost *:80>
-    DocumentRoot /home/elipce/sso/www
+    DocumentRoot /home/__user__/sso/www
     ServerName  mondomaine.com
 
     ErrorLog /var/log/apache2/mondomaine.com_error.log
     CustomLog /var/log/apache2/mondomaine.com_access.log combined
 
-    <Directory /home/elipce/sso/www/>
+    <Directory /home/__user__/sso/www/>
        Options -Indexes
        AllowOverride None
        DirectoryIndex /module.php/core/frontpage_welcome.php
@@ -113,7 +113,7 @@ Plusieurs méthodes sont disponibles sous forme de modules à activer :
 
 #### Configurer l'IdP
 
-*Le fournisseur d'identité est configuré les fichiers `/var/simplesamlphp/metadata/saml20-idp-hosted.php`.*
+*Le fournisseur d'identité est configuré les fichiers `./metadata/saml20-idp-hosted.php`.*
 ```
 <?php
 $metadata['__DYNAMIC:1__'] = array(
@@ -141,8 +141,9 @@ $metadata['__DYNAMIC:1__'] = array(
 
 * Copier la clé privée et le certificat public :
 ```
-cp /etc/letsencrypt/live/mondomaine.com/privkey.pem /var/simplesamlphp/cert/mondomaine.com.pem
-cp /etc/letsencrypt/live/mondomaine.com/fullchain.pem /var/simplesamlphp/cert/mondomaine.com.crt
+mkdir cert
+cp /etc/letsencrypt/live/mondomaine.com/privkey.pem ./cert/mondomaine.com.pem
+cp /etc/letsencrypt/live/mondomaine.com/fullchain.pem ./cert/mondomaine.com.crt
 ```
 * Changer la méthode d'authentification utilisée :
 ```
@@ -160,6 +161,10 @@ cp /etc/letsencrypt/live/mondomaine.com/fullchain.pem /var/simplesamlphp/cert/mo
                 'firstname' => 'givenName',
             ),
         ),
+```
+* Activer le module SAML :
+```
+touch ./modules/saml/enable
 ```
 
 #### Ajouter des fournisseurs de service
@@ -228,7 +233,15 @@ CREATE TABLE users (
         'firstname' => 'givenName',
     ),
 ```
-* Configurer les envois de mail dans le fichier `./modules/selfregister/config-templates/module_selfregister.php`.
+* Configurer les envois de mail dans le fichier :
+```
+./modules/selfregister/config-templates/module_selfregister.php
+```.
+* Activer le module d'inscription :
+```
+touch ./modules/selfregister/enable
+```
+
 
 ## Liens utiles
 * [Documentation officielle](https://simplesamlphp.org/docs/stable/)
