@@ -80,6 +80,7 @@ if (array_key_exists('sender', $_POST)) {
 			$attributes[$name][0] = $value;
 		}
 
+		// Get user attributes
 		$session->setData('selfregister:updated', 'attributes', $attributes, SimpleSAML_Session::DATA_TIMEOUT_SESSION_END);
 		$values = sspmod_selfregister_Util::filterAsAttributes($attributes, $reviewAttr);
 
@@ -87,11 +88,8 @@ if (array_key_exists('sender', $_POST)) {
 		$feedback['success'] = 'Vos informations ont bien été modifiées !';
 
 	} catch(sspmod_selfregister_Error_UserException $e){
-
 		// Some user error detected
 		$values = $validator->getRawInput();
-		$values['mail'] = $attributes['mail'][0];
-
 		// Set feedback message
 		$feedback['error'] = 'Votre saisie est invalide !';
 	}
@@ -108,7 +106,6 @@ if (array_key_exists('sender', $_POST)) {
 	$values = sspmod_selfregister_Util::filterAsAttributes($attributes, $reviewAttr);
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -155,7 +152,7 @@ if (array_key_exists('sender', $_POST)) {
 <div class="container">
 	<div class="row">
 		<div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
-			<img class="img im-responsive center-block" src="img/logo.jpg"/>
+			<img class="img im-responsive center-block" src="<?= SimpleSAML_Module::getModuleURL('selfregister/img/logo.jpg') ?>"/>
 			<form role="form" action="." method="post">
 				<h2>Mes informations <small>Modifiez vos informations.</small>
 				</h2>
