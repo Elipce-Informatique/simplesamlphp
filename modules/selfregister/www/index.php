@@ -122,7 +122,7 @@ if (array_key_exists('sender', $_POST)) {
 <body>
 <!-- Navigation -->
 <nav class="navbar navbar-default navbar-static-top">
-	<div class="container">
+	<div class="container-fluid">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
 				<span class="sr-only">Toggle navigation</span>
@@ -154,7 +154,7 @@ if (array_key_exists('sender', $_POST)) {
 		<div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
 			<img class="img im-responsive center-block" src="<?= SimpleSAML_Module::getModuleURL('selfregister/img/logo.jpg') ?>"/>
 			<form role="form" action="?" method="post">
-				<h2>Mes informations <small>Modifiez vos informations.</small>
+				<h2>Mon compte <small>Mes informations personnelles.</small>
 				</h2>
 				<hr class="colorgraph">
  				<!-- Messages -->
