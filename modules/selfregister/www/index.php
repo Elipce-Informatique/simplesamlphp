@@ -28,17 +28,11 @@ if ($data !== NULL) {
 $formFields = $uregconf->getArray('formFields');
 $reviewAttr = $uregconf->getArray('attributes');
 
-// Init show and readOnly fields
+// Sort show fields
 $showFields = array();
-$readOnlyFields = array();
-
-// Sort form fields
 foreach ($formFields as $name => $field) {
 	if(array_key_exists('show',$field['layout']) && $field['layout']['show']) {
 		$showFields[] = $name;
-	}
-	if(array_key_exists('read_only',$field['layout']) && $field['layout']['read_only']) {
-		$readOnlyFields[] = $name;
 	}
 }
 
@@ -198,7 +192,7 @@ if (array_key_exists('sender', $_POST)) {
 									<span class="glyphicon glyphicon-user"></span>
 								</div>
 								<input type="text" name="sn" id="sn" class="form-control input-lg" autofocus
-									   value="<?= $attributes['sn'] ?>" placeholder="Nom" tabindex="2" required>
+									   value="<?= $values['sn'] ?>" placeholder="Nom" tabindex="1" required>
 							</div>
 						</div>
 					</div>
@@ -209,7 +203,7 @@ if (array_key_exists('sender', $_POST)) {
 									<span class="glyphicon glyphicon-user"></span>
 								</div>
 								<input type="text" name="givenName" id="givenName" class="form-control input-lg"
-									   value="<?= $attributes['givenName'] ?>" placeholder="Prénom" tabindex="1" required>
+									   value="<?= $values['givenName'] ?>" placeholder="Prénom" tabindex="2" required>
 							</div>
 						</div>
 					</div>
@@ -220,7 +214,7 @@ if (array_key_exists('sender', $_POST)) {
 							<span class="glyphicon glyphicon-envelope"></span>
 						</div>
 						<input type="email" name="mail" id="mail" class="form-control input-lg" placeholder="Email"
-							   value="<?= $attributes['mail'] ?>" tabindex="4" required>
+							   value="<?= $values['mail'] ?>" tabindex="3" required>
 					</div>
 				</div>
 				<hr class="colorgraph">
