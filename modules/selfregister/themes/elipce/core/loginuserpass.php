@@ -42,8 +42,8 @@
                                 <div class="alert alert-info alert-dismissible text-center" role="alert">
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                                             aria-hidden="true">&times;</span></button>
-                                    <span class="glyphicon glyphicon-information-sign"></span>
-                                    &nbsp;Identifiant : demo / Mot de passe : demo
+                                    <span class="glyphicon glyphicon-info-sign"></span>
+                                    &nbsp;Identifiant : <strong>demo</strong> / Mot de passe : <strong>demo</strong>
                                 </div>
                             </div>
                         </div>
