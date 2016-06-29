@@ -1,5 +1,9 @@
 <?php
+/**
+ * Initialization
+ */
 
+// Load config
 $config = SimpleSAML_Configuration::getInstance();
 $uregconf = SimpleSAML_Configuration::getConfig('module_selfregister.php');
 $tokenLifetime = $uregconf->getInteger('mailtoken.lifetime');
@@ -7,48 +11,51 @@ $viewAttr = $uregconf->getArray('attributes');
 $formFields = $uregconf->getArray('formFields');
 $systemName = array('%SNAME%' => $uregconf->getString('system.name') );
 
+// Init feedback messages
+$feedback['error'] = null;
 
-if(array_key_exists('emailreg', $_REQUEST)){
-	// Stage 2: User have submitted e-mail adress for registration
+/**
+ * Step 1 : User has sent his email
+ */
+if(array_key_exists('emailreg', $_REQUEST)) {
 	try {
 		$email = filter_input(INPUT_POST, 'emailreg', FILTER_VALIDATE_EMAIL);
-		if(!$email){
-			$rawValue = isset($_REQUEST['emailreg'])?$_REQUEST['emailreg']:NULL;
-			if(!$rawValue){
+		if (!$email) {
+			$rawValue = isset($_REQUEST['emailreg']) ? $_REQUEST['emailreg'] : NULL;
+			if (!$rawValue) {
 				throw new sspmod_selfregister_Error_UserException(
 					'void_value',
 					'mail',
 					'',
 					'Validation of user input failed.'
-					.' Field:'.'mail'
-					.' is empty');
-			}else{
+					. ' Field:' . 'mail'
+					. ' is empty');
+			} else {
 				throw new sspmod_selfregister_Error_UserException(
 					'illegale_value',
 					'mail',
 					$rawValue,
 					'Validation of user input failed.'
-					.' Field:'.'mail'
-					.' Value:'.$rawValue);
+					. ' Field:' . 'mail'
+					. ' Value:' . $rawValue);
 			}
 		}
 
+		// Init database access
 		$store = sspmod_selfregister_Storage_UserCatalogue::instantiateStorage();
-		if($store->isRegistered('mail', $email) ) {
-			$html = new SimpleSAML_XHTML_Template(
-				$config,
-				'selfregister:step5_mailUsed.tpl.php',
-				'selfregister:selfregister');
-			$html->data['systemName'] = $systemName;
 
-			$html->show();
+		if ($store->isRegistered('mail', $email)) {
+			$feedback['error'] = 'Cet email est déjà utilisé par un autre utilisateur !';
 		} else {
+			// Generate verification email
 			$tg = new SimpleSAML_Auth_TimeLimitedToken($tokenLifetime);
 			$tg->addVerificationData($email);
 			$newToken = $tg->generate_token();
 
-			$url = SimpleSAML_Utilities::selfURL();
+			// Find self URL
+			$url = SimpleSAML_Module::getModuleURL('selfregister/createUser.php');
 
+			// Add variables
 			$registerurl = SimpleSAML_Utilities::addURLparameter(
 				$url,
 				array(
@@ -57,6 +64,7 @@ if(array_key_exists('emailreg', $_REQUEST)){
 				)
 			);
 
+			// Build mail template
 			$mailt = new SimpleSAML_XHTML_Template(
 				$config,
 				'selfregister:mail1_token.tpl.php',
@@ -65,6 +73,7 @@ if(array_key_exists('emailreg', $_REQUEST)){
 			$mailt->data['registerurl'] = $registerurl;
 			$mailt->data['systemName'] = $systemName;
 
+			// Send email
 			$mailer = new sspmod_selfregister_XHTML_Mailer(
 				$email,
 				$uregconf->getString('mail.subject'),
@@ -74,158 +83,80 @@ if(array_key_exists('emailreg', $_REQUEST)){
 			$mailer->setTemplate($mailt);
 			$mailer->send();
 
-			$html = new SimpleSAML_XHTML_Template(
-				$config,
-				'selfregister:step2_sent.tpl.php',
-				'selfregister:selfregister');
-			$html->data['systemName'] = $systemName;
-			$html->show();
+			// Redirect
+			header('Location: ' . SimpleSAML_Module::getModuleURL('selfregister/emailSent.php'));
+			exit();
 		}
-	}catch(sspmod_selfregister_Error_UserException $e){
-		$et = new SimpleSAML_XHTML_Template(
-			$config,
-			'selfregister:step1_email.tpl.php',
-			'selfregister:selfregister');
-		$et->data['email'] = $_POST['emailreg'];
-		$et->data['systemName'] = $systemName;
-
-		$error = $et->t(
-			$e->getMesgId(),
-			$e->getTrVars());
-		$et->data['error'] = htmlspecialchars($error);
-
-		$et->show();
+	} catch (sspmod_selfregister_Error_UserException $e) {
+		$feedback['error'] = 'Votre saisie est invalide !';
 	}
-
-}elseif(array_key_exists('token', $_GET)){
-	// Stage 3: User access page from url in e-mail
-	try{
-		$email = filter_input(
-			INPUT_GET,
-			'email',
-			FILTER_VALIDATE_EMAIL);
-		if(!$email)
-			throw new SimpleSAML_Error_Exception(
-				'E-mail parameter in request is lost');
-
-		$tg = new SimpleSAML_Auth_TimeLimitedToken($tokenLifetime);
-		$tg->addVerificationData($email);
-		$token = $_REQUEST['token'];
-		if (!$tg->validate_token($token))
-			throw new sspmod_selfregister_Error_UserException('invalid_token');
-
-		$formGen = new sspmod_selfregister_XHTML_Form($formFields, 'newUser.php');
-
-		$showFields = sspmod_selfregister_Util::genFieldView($viewAttr);
-		$formGen->fieldsToShow($showFields);
-		$formGen->setReadOnly('mail');
-
-		$hidden = array(
-			'emailconfirmed' => $email,
-			'token' => $token);
-		$formGen->addHiddenData($hidden);
-		$formGen->setValues(
-			array(
-				'mail' => $email
-			)
-		);
-
-		$formGen->setSubmitter('submit_change');
-		$formHtml = $formGen->genFormHtml();
-
-		$html = new SimpleSAML_XHTML_Template(
-			$config,
-			'selfregister:step3_register.tpl.php',
-			'selfregister:selfregister');
-		$html->data['formHtml'] = $formHtml;
-		$html->show();
-	}catch (sspmod_selfregister_Error_UserException $e){
-		// Invalid token
-		$terr = new SimpleSAML_XHTML_Template(
-			$config,
-			'selfregister:step1_email.tpl.php',
-			'selfregister:selfregister');
-
-		$error = $terr->t(
-			$e->getMesgId(),
-			$e->getTrVars()
-		);
-		$terr->data['error'] = htmlspecialchars($error);
-		$terr->data['systemName'] = $systemName;
-		$terr->show();
-	}
-}elseif(array_key_exists('sender', $_POST)){
-	try{
-		 // Add or update user object
-		 $listValidate = sspmod_selfregister_Util::genFieldView($viewAttr);
-		 $validator = new sspmod_selfregister_Registration_Validation(
-			 $formFields,
-			 $listValidate);
-		 $validValues = $validator->validateInput();
-
-
-		 $userInfo = sspmod_selfregister_Util::processInput($validValues, $viewAttr);
-
-		 $store = sspmod_selfregister_Storage_UserCatalogue::instantiateStorage();
-
-		 $store->addUser($userInfo);
-
-		 $html = new SimpleSAML_XHTML_Template(
-			 $config,
-			 'selfregister:step4_complete.tpl.php',
-			 'selfregister:selfregister');
-
-		 $html->data['systemName'] = $systemName;
-		 $html->show();
-	}catch(sspmod_selfregister_Error_UserException $e){
-		 // Some user error detected
-		 $formGen = new sspmod_selfregister_XHTML_Form($formFields, 'newUser.php');
-
-		 $showFields = sspmod_selfregister_Util::genFieldView($viewAttr);
-		 $formGen->fieldsToShow($showFields);
-		 $formGen->setReadOnly('mail');
-
-		 $values = $validator->getRawInput();
-
-		 $hidden = array();
-		 $values['mail'] = $hidden['emailconfirmed'] = $_REQUEST['emailconfirmed'];
-		 $hidden['token'] = $_REQUEST['token'];
-		 $formGen->addHiddenData($hidden);
-		 $values['pw1'] = '';
-		 $values['pw2'] = '';
-
-		 $formGen->setValues($values);
-		 $formGen->setSubmitter('submit_change');
-		 $formHtml = $formGen->genFormHtml();
-
-		 $html = new SimpleSAML_XHTML_Template(
-			 $config,
-			 'selfregister:step3_register.tpl.php',
-			 'selfregister:selfregister');
-		 $html->data['formHtml'] = $formHtml;
-
-		$error = $html->t(
-			 $e->getMesgId(),
-			 $e->getTrVars()
-		);
-
-		$html->data['error'] = htmlspecialchars($error);
-		$html->show();
-	}
-} else {
-
-	// Stage 1: New user clean access
-	$html = new SimpleSAML_XHTML_Template(
-		$config,
-		'selfregister:step1_email.tpl.php',
-		'selfregister:selfregister');
-	$html->data['systemName'] = $systemName;
-
-	$logged_and_same_auth = sspmod_selfregister_Util::checkLoggedAndSameAuth();
-	if($logged_and_same_auth) {
-		$html->data['logouturl'] = $logged_and_same_auth->getLogoutURL();
-	}
-	$html->show();
 }
-
 ?>
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="utf-8">
+	<meta name="robots" content="noindex">
+	<title>Email envoyé</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="icon" href="<?= SimpleSAML_Module::getModuleURL('selfregister/img/favicon.ico') ?>" />
+	<!-- CSS -->
+	<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet">
+	<link href="<?= SimpleSAML_Module::getModuleURL('selfregister/css/style.css') ?>" rel="stylesheet">
+</head>
+<body>
+<!-- Container -->
+<div class="container">
+	<div class="row">
+		<div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+			<img class="img im-responsive center-block"
+				 src="<?= SimpleSAML_Module::getModuleURL('selfregister/img/logo.jpg') ?>"/>
+			<form role="form" action="?" method="post">
+				<h2>Nouveau compte <small>Saisissez un email valide.</small></h2>
+				<fieldset>
+					<hr class="colorgraph">
+					<!-- Messages -->
+					<? if ($feedback['error']): ?>
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12">
+								<div class="alert alert-danger alert-dismissible text-center" role="alert">
+									<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+											aria-hidden="true">&times;</span></button>
+									<span class="glyphicon glyphicon-exclamation-sign"></span>
+									&nbsp;<?= $feedback['error'] ?>
+								</div>
+							</div>
+						</div>
+					<? endif; ?>
+					<div class="form-group">
+						<div class="input-group">
+							<div class="input-group-addon">
+								<span class="glyphicon glyphicon-envelope"></span>
+							</div>
+							<input type="email" name="emailreg" id="emailreg" class="form-control input-lg" autofocus
+								   size="50" placeholder="Email" required>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-offset-6 col-sm-offset-6 col-md-offset-6 col-xs-6 col-sm-6 col-md-6">
+							<input type="submit" name="save" class="btn btn-lg btn-success btn-block" value="Envoyer">
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+</div>
+<br/>
+<!-- Footer -->
+<footer class="footer">
+	<div class="container">
+		<p class="text-muted">Elipce Informatique &copy;</p>
+	</div>
+</footer>
+<!-- JS -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+</body>
+</html>
