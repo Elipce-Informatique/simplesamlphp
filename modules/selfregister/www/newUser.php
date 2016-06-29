@@ -140,8 +140,7 @@ if(array_key_exists('emailreg', $_REQUEST)) {
 					</div>
 					<div class="row">
 						<div class="col-xs-6 col-sm-6 col-md-6">
-							<button onclick="history.back();"
-									class="btn btn-lg btn-success btn-block">Retour</button>
+							<a href="#" onclick="history.back();" class="btn btn-lg btn-success btn-block">Retour</a>
 						</div>
 						<div class="col-xs-6 col-sm-6 col-md-6">
 							<input type="submit" name="save" class="btn btn-lg btn-primary btn-block" value="Envoyer">
