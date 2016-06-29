@@ -236,7 +236,7 @@ CREATE TABLE users (
 * Configurer les envois de mail dans le fichier :
 ```
 ./modules/selfregister/config-templates/module_selfregister.php
-```.
+```
 * Activer le module d'inscription :
 ```
 touch ./modules/selfregister/enable
