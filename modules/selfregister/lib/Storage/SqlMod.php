@@ -63,7 +63,7 @@ class sspmod_selfregister_Storage_SqlMod implements iUserCatalogue {
 				INSERT INTO users
 				(userid, email, password, salt, firstname, lastname, created, updated)
 				VALUES
-				(?, ?, ?, ?, ?, ?, now(), now())
+				(null, ?, ?, ?, ?, ?, now(), now())
 			");
 			$sth->execute(array(
 				$userid, strtolower($entry['email']), $this->hash_pass($entry['userPassword']), $this->salt, $entry['firstname'], $entry['lastname']
