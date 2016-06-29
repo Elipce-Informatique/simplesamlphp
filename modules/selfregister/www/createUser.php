@@ -157,6 +157,7 @@ if (array_key_exists('token', $_GET)) {
                         </div>
                         <input type="email" name="mail" id="mail" class="form-control input-lg"
                                value="<?= $values['mail'] ?>" disabled>
+                        <input type="hidden" name="emailconfirmed" id="emailconfirmed" value="<?= $values['mail'] ?>">
                         <input type="hidden" name="token" id="token" value="<?= $values['token'] ?>">
                     </div>
                 </div>
