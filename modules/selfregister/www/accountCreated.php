@@ -19,7 +19,7 @@
 				 src="<?= SimpleSAML_Module::getModuleURL('selfregister/img/logo.jpg') ?>"/>
 			<div class="jumbotron text-center">
 				<h1><span class="glyphicon glyphicon-ok"></span></h1>
-				<p>Votre comte a bien été créé !</p>
+				<p>Votre compte a bien été créé !</p>
 				<p class="text-muted">Vous pouvez modifier vos <em>informations personnelles</em> à tout moment en cliquant <a href="<?= SimpleSAML_Module::getModuleURL('selfregister/index.php') ?>">ici</a>.</p>
 			</div>
 		</div>
