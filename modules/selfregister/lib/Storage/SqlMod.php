@@ -52,21 +52,15 @@ class sspmod_selfregister_Storage_SqlMod implements iUserCatalogue {
 		if ($this->isRegistered('email', $entry['email'])) {
 			throw new sspmod_selfregister_Error_UserException('email_taken');
 
-		} elseif($this->isRegistered('userid', $entry['username'])) {
-			throw new sspmod_selfregister_Error_UserException('uid_taken');
-
 		} else {
-
-			//$userid = $this->createUniqueUserId($entry['email']);
-			$userid = $entry['username'];
 			$sth = $this->dbh->prepare("
 				INSERT INTO users
-				(userid, email, password, salt, firstname, lastname, created, updated)
+				(email, password, salt, firstname, lastname, created, updated)
 				VALUES
-				(?, ?, ?, ?, ?, ?, now(), now())
+				(?, ?, ?, ?, ?, now(), now())
 			");
 			$sth->execute(array(
-				$userid, strtolower($entry['email']), $this->hash_pass($entry['userPassword']), $this->salt, $entry['firstname'], $entry['lastname']
+				strtolower($entry['email']), $this->hash_pass($entry['userPassword']), $this->salt, $entry['firstname'], $entry['lastname']
 			));
 		}
 	}
