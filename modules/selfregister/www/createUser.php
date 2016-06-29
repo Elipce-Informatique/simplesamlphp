@@ -77,13 +77,17 @@ if (array_key_exists('token', $_GET)) {
         // Get values
         $values = $validator->getRawInput();
         // Restore values
-        $values['mail'] = $hidden['emailconfirmed'] = $_REQUEST['emailconfirmed'];
+        $values['mail'] = $_REQUEST['emailconfirmed'];
         $values['token'] = $_REQUEST['token'];
         $values['pw1'] = '';
         $values['pw2'] = '';
         // Set feedback message
         $feedback['error'] = 'Votre saisie est invalide !';
     }
+} else {
+    // Redirect
+    header('Location: ' . SimpleSAML_Module::getModuleURL('selfregister/index.php'));
+    exit();
 }
 ?>
 
