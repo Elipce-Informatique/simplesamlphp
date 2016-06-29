@@ -143,8 +143,14 @@ if (array_key_exists('emailreg', $_REQUEST)) {
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-xs-offset-6 col-sm-offset-6 col-md-offset-6 col-xs-6 col-sm-6 col-md-6">
-							<input type="submit" name="save" class="btn btn-lg btn-success btn-block" value="Envoyer">
+
+						<div class="col-xs-6 col-sm-6 col-md-6">
+							<button onclick="history.back();"
+							   class="btn btn-lg btn-success btn-block">Retour</button>
+						</div>
+						<div class="col-xs-6 col-sm-6 col-md-6">
+							<input type="submit" name="save" id="wp-submit"
+								   class="btn btn-lg btn-primary btn-block" value="Envoyer">
 						</div>
 					</div>
 				</fieldset>
