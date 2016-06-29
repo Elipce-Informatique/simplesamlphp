@@ -192,7 +192,7 @@ FLUSH PRIVILEGES;
 * Créer la table SQL :
 ```
 CREATE TABLE users (
-    `userid` varchar(32) NOT NULL,
+    `userid` int(32) NOT NULL AUTO_INCREMENT,
     `password` text NOT NULL,
     `salt` blob,
     `firstname` text,
@@ -233,15 +233,34 @@ CREATE TABLE users (
         'firstname' => 'givenName',
     ),
 ```
-* Configurer les envois de mail dans le fichier :
+* Copier le fichier de configuration du module :
 ```
-./modules/selfregister/config-templates/module_selfregister.php
+cp ./modules/selfregister/config-templates/module_selfregister.php ./config
+```
+* Configurer l'inscription et le mapping par défaut :
+```
+'system.name' => 'Elipce Informatique',
+
+'mail.from'     => 'Admin <admin@domain.com>',
+'mail.replyto'  => 'Admin <admin@domain.com>',
+'mail.subject'  => 'Vérification E-mail',
+
+'sql' => array(
+    'user.id.param' => 'email',
+),
+
+'attributes'  => array(
+    'username'      => 'mail',
+    'firstname'     => 'givenName',
+    'lastname'      => 'sn',
+    'email'         => 'mail',
+    'userPassword'  => 'password',
+),
 ```
 * Activer le module d'inscription :
 ```
 touch ./modules/selfregister/enable
 ```
-
 
 ## Liens utiles
 * [Documentation officielle](https://simplesamlphp.org/docs/stable/)
