@@ -69,12 +69,10 @@ if (array_key_exists('emailreg', $_REQUEST)) {
 		// Build email template
 		$mailt = new SimpleSAML_XHTML_Template(
 			$config,
-			'selfregister:lostPasswordMail_token.tpl.php',
+			'selfregister:lostPasswordMail.php',
 			'selfregister:selfregister');
 
 		$mailt->data['registerurl'] = $registerurl;
-		$systemName = array('%SNAME%' => $uregconf->getString('system.name') );
-		$mailt->data['systemName'] = $systemName;
 
 		// Send email
 		$mailer = new sspmod_selfregister_XHTML_Mailer(
