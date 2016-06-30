@@ -43,7 +43,7 @@
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                                             aria-hidden="true">&times;</span></button>
                                     <span class="glyphicon glyphicon-info-sign"></span>
-                                    &nbsp;Identifiant : <strong>demo</strong> / Mot de passe : <strong>demo</strong>
+                                    &nbsp;Email : <strong>demo@elipce.com</strong> / Mot de passe : <strong>demo</strong>
                                 </div>
                             </div>
                         </div>
@@ -54,8 +54,8 @@
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-user"></span>
                             </div>
-                            <input type="text" name="username" id="username" class="form-control input-lg"
-                                   value="<?= htmlspecialchars($this->data['username']) ?>"
+                            <input type="email" name="username" id="username" class="form-control input-lg"
+                                   value="<?= htmlspecialchars($this->data['username']) ?>" tabindex="1"
                                    placeholder="Nom d'utilisateur" required autofocus>
                         </div>
                     </div>
@@ -66,7 +66,7 @@
                                 <span class="glyphicon glyphicon-asterisk"></span>
                             </div>
                             <input type="password" name="password" id="user_pass" class="form-control input-lg"
-                                   placeholder="Mot de passe" required>
+                                   placeholder="Mot de passe" tabindex="2" required>
                         </div>
                     </div>
                     <div class="row">
