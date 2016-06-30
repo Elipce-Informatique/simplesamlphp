@@ -172,7 +172,8 @@ if(array_key_exists('sender', $_REQUEST)) {
 				</div>
 				<div class="row">
 					<div class="col-xs-offset-6 col-sm-offset-6 col-md-offset-6 col-xs-6 col-sm-6 col-md-6">
-						<input type="submit" name="sender" class="btn btn-lg btn-success btn-block" value="Modifier">
+						<input type="submit" name="sender" tabindex="3"
+							   class="btn btn-lg btn-success btn-block" value="Modifier">
 					</div>
 				</div>
 			</form>
