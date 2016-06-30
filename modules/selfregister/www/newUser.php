@@ -44,6 +44,7 @@ if(array_key_exists('emailreg', $_REQUEST)) {
 		// Init database access
 		$store = sspmod_selfregister_Storage_UserCatalogue::instantiateStorage();
 
+		// Check if email is not taken
 		if ($store->isRegistered('mail', $email)) {
 			$feedback['error'] = 'Cet email est déjà utilisé par un autre utilisateur !';
 		} else {
@@ -67,11 +68,10 @@ if(array_key_exists('emailreg', $_REQUEST)) {
 			// Build mail template
 			$mailt = new SimpleSAML_XHTML_Template(
 				$config,
-				'selfregister:mail1_token.tpl.php',
+				'selfregister:registrationMail.php',
 				'selfregister:selfregister');
 			$mailt->data['email'] = $email;
 			$mailt->data['registerurl'] = $registerurl;
-			$mailt->data['systemName'] = $systemName;
 
 			// Send email
 			$mailer = new sspmod_selfregister_XHTML_Mailer(
