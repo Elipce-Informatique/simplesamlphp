@@ -137,7 +137,7 @@ if (array_key_exists('emailreg', $_REQUEST)) {
 								<span class="glyphicon glyphicon-envelope"></span>
 							</div>
 							<input type="email" name="emailreg" id="emailreg" class="form-control input-lg" autofocus
-								   required placeholder="Email">
+								   required placeholder="Email" tabindex="1">
 						</div>
 					</div>
 					<div class="row">
@@ -145,7 +145,7 @@ if (array_key_exists('emailreg', $_REQUEST)) {
 							<a href="#" onclick="history.back();" class="btn btn-lg btn-success btn-block">Retour</a>
 						</div>
 						<div class="col-xs-6 col-sm-6 col-md-6">
-							<input type="submit" name="save" id="wp-submit"
+							<input type="submit" name="save" id="wp-submit" tabindex="2"
 								   class="btn btn-lg btn-primary btn-block" value="Envoyer">
 						</div>
 					</div>

@@ -189,7 +189,8 @@ if (array_key_exists('token', $_GET)) {
                 <hr class="colorgraph">
                 <div class="row">
                     <div class="col-xs-offset-6 col-sm-offset-6 col-md-offset-6 col-xs-6 col-sm-6 col-md-6">
-                        <input type="submit" name="sender" class="btn btn-lg btn-success btn-block" value="Enregistrer">
+                        <input type="submit" name="sender" tabindex="5"
+                               class="btn btn-lg btn-success btn-block" value="Enregistrer">
                     </div>
                 </div>
             </form>

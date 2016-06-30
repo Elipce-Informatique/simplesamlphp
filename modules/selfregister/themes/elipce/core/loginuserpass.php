@@ -80,7 +80,7 @@
                                class="btn btn-lg btn-success btn-block">S'inscrire</a>
                         </div>
                         <div class="col-xs-6 col-sm-6 col-md-6">
-                            <input type="submit" name="wp-submit" id="wp-submit"
+                            <input type="submit" name="wp-submit" id="wp-submit" tabindex="3"
                                    class="btn btn-lg btn-primary btn-block" value="Se connecter">
                         </div>
                     </div>
