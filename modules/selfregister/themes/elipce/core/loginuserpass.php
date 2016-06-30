@@ -76,12 +76,12 @@
                     <hr class="colorgraph">
                     <div class="row">
                         <div class="col-xs-6 col-sm-6 col-md-6">
-                            <input type="submit" name="wp-submit" id="wp-submit"
-                                   class="btn btn-lg btn-success btn-block" value="Se connecter">
+                            <a href="<?= SimpleSAML_Module::getModuleURL('selfregister/newUser.php') ?>"
+                               class="btn btn-lg btn-success btn-block">S'inscrire</a>
                         </div>
                         <div class="col-xs-6 col-sm-6 col-md-6">
-                            <a href="<?= SimpleSAML_Module::getModuleURL('selfregister/newUser.php') ?>"
-                               class="btn btn-lg btn-primary btn-block">S'inscrire</a>
+                            <input type="submit" name="wp-submit" id="wp-submit"
+                                   class="btn btn-lg btn-primary btn-block" value="Se connecter">
                         </div>
                     </div>
                 </fieldset>
