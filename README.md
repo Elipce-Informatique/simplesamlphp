@@ -30,7 +30,6 @@ cd /home/__user__/sso & composer update
     <Directory /home/__user__/sso/www/>
        Options -Indexes
        AllowOverride None
-       DirectoryIndex /module.php/core/frontpage_welcome.php
     </Directory>
     
 </VirtualHost>
@@ -38,6 +37,14 @@ cd /home/__user__/sso & composer update
 * Générer un certificat SSL :
 ```
  cd /home/letsencrypt & ./letsencrypt-auto
+```
+* Rediriger les utilisateurs vers la page de connexion :
+```
+RedirectMatch 302 ^/$ https://mondomaine.com/module.php/selfregister/index.php
+```
+* Mettre en place un accès backend :
+```
+RedirectMatch 302 ^/backend$ https://mondomaine.com/module.php/core/frontpage_auth.php
 ```
 
 #### Configuration générale
