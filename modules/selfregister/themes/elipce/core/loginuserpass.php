@@ -54,7 +54,7 @@
                             <div class="input-group-addon">
                                 <span class="glyphicon glyphicon-user"></span>
                             </div>
-                            <input type="email" name="username" id="username" class="form-control input-lg"
+                            <input type="text" name="username" id="username" class="form-control input-lg"
                                    value="<?= htmlspecialchars($this->data['username']) ?>" tabindex="1"
                                    placeholder="Nom d'utilisateur" required autofocus>
                         </div>
