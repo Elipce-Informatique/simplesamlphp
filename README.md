@@ -165,7 +165,7 @@ cp /etc/letsencrypt/live/mondomaine.com/fullchain.pem ./cert/mondomaine.com.crt
                 'userid'    => 'uid',
                 'email'     => 'mail',
                 'lastname'  => 'sn',
-                'firstname' => 'givenName',
+                'firstname' => 'fn',
             ),
         ),
 ```
