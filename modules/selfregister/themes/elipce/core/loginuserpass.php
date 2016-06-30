@@ -43,7 +43,7 @@
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                                             aria-hidden="true">&times;</span></button>
                                     <span class="glyphicon glyphicon-info-sign"></span>
-                                    &nbsp;Email : <strong>demo@elipce.com</strong> / Mot de passe : <strong>demo</strong>
+                                    &nbsp;Identifiant : <strong>demo@elipce.com</strong> / Mot de passe : <strong>demo</strong>
                                 </div>
                             </div>
                         </div>
@@ -56,7 +56,7 @@
                             </div>
                             <input type="text" name="username" id="username" class="form-control input-lg"
                                    value="<?= htmlspecialchars($this->data['username']) ?>" tabindex="1"
-                                   placeholder="Nom d'utilisateur" required autofocus>
+                                   placeholder="Identifiant" required autofocus>
                         </div>
                     </div>
                     <!-- Password -->
