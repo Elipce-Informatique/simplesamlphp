@@ -38,13 +38,11 @@ cd /home/__user__/sso & composer update
 ```
  cd /home/letsencrypt & ./letsencrypt-auto
 ```
-* Rediriger les utilisateurs vers la page de connexion :
+* Mettre en place des redirections :
 ```
 RedirectMatch 302 ^/$ https://mondomaine.com/module.php/selfregister/index.php
-```
-* Mettre en place un accès backend :
-```
 RedirectMatch 302 ^/backend$ https://mondomaine.com/module.php/core/frontpage_auth.php
+RedirectMatch 302 ^/register$ https://sso.elipce.com/module.php/selfregister/newUser.php
 ```
 
 #### Configuration générale
@@ -58,6 +56,11 @@ RedirectMatch 302 ^/backend$ https://mondomaine.com/module.php/core/frontpage_au
 * Définir un mot de passe administrateur pour l'interface web :
 ```
 'auth.adminpassword' => 'setnewpasswordhere',
+```
+* Sécuriser le backend :
+```
+'admin.protectindexpage' => true,
+'admin.protectmetadata' => true,
 ```
 * Ajouter le chemin vers la racine :
 ```
