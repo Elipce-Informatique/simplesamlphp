@@ -72,6 +72,7 @@ if(array_key_exists('emailreg', $_REQUEST)) {
 				'selfregister:selfregister');
 			$mailt->data['email'] = $email;
 			$mailt->data['registerurl'] = $registerurl;
+			$mailt->data['systemName'] = $uregconf->getString('system.name');
 
 			// Send email
 			$mailer = new sspmod_selfregister_XHTML_Mailer(

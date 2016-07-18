@@ -22,10 +22,10 @@ $config = array (
 	'mailtoken.lifetime' => (3600*24*5),
 
 	// FIXME make this default to technicalcontact_name etc.
-	'mail.from'     => 'Selfregister admin <na@example.org>',
-	'mail.replyto'  => 'Selfregister admin <aai@example.org>',
+	'mail.from'     => 'Selfregister admin <admin@example.org>',
+	'mail.replyto'  => 'Selfregister support <support@example.org>',
 	'mail.subject'  => 'E-mail verification',
-
+	'mail.tracker' => 'Selfregister admin <tracker@example.org>',
 
 	// A PHP hashing algorithm that is also supported by your database.
 	// The SHA2 family is good choice. Carefully construct the SQL in 

@@ -69,6 +69,25 @@ if (array_key_exists('token', $_GET)) {
         // Create user in database
         $store->addUser($userInfo);
 
+        // Build mail template
+        $mailt = new SimpleSAML_XHTML_Template(
+            $config,
+            'selfregister:newAccountMail.php',
+            'selfregister:selfregister');
+
+        // Catch account email
+        $mailt->data['email'] = $_REQUEST['emailconfirmed'];
+
+        // Send email
+        $mailer = new sspmod_selfregister_XHTML_Mailer(
+            $uregconf->getString('mail.tracker'),
+            $uregconf->getString('system.name'),
+            $uregconf->getString('mail.from'),
+            NULL,
+            $uregconf->getString('mail.from'));
+        $mailer->setTemplate($mailt);
+        $mailer->send();
+
         // Redirect
         header('Location: ' . SimpleSAML_Module::getModuleURL('selfregister/accountCreated.php'));
         exit();
