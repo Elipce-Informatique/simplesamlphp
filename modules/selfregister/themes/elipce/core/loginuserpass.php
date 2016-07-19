@@ -36,17 +36,6 @@
                                 </div>
                             </div>
                         </div>
-                    <? else: ?>
-                        <div class="row">
-                            <div class="col-xs-12 col-sm-12 col-md-12">
-                                <div class="alert alert-info alert-dismissible text-center" role="alert">
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                            aria-hidden="true">&times;</span></button>
-                                    <span class="glyphicon glyphicon-info-sign"></span>
-                                    &nbsp;Email : <strong>demo@elipce.com</strong> / Mot de passe : <strong>demo</strong>
-                                </div>
-                            </div>
-                        </div>
                     <? endif; ?>
                     <!-- Mail -->
                     <div class="form-group">
