@@ -19,8 +19,20 @@
 				 src="<?= SimpleSAML_Module::getModuleURL('selfregister/img/logo.jpg') ?>"/>
 			<div class="jumbotron text-center">
 				<h1><span class="glyphicon glyphicon-ok"></span></h1>
-				<p>Votre compte a bien été créé !</p>
+				<p>Compte créé avec succès !</p>
 				<p class="text-muted">Vous pouvez modifier vos <em>informations personnelles</em> à tout moment en cliquant <a href="<?= SimpleSAML_Module::getModuleURL('selfregister/index.php') ?>">ici</a>.</p>
+				<hr/>
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<h3 class="panel-title"><strong>Services disponibles</strong></h3>
+					</div>
+					<div class="panel-body">
+						<div class="list-group">
+							<a href="http://demo.elipce.com/" class="list-group-item">Portail de démonstration EDS</a>
+							<a href="'https://sso.online.tableau.com/" class="list-group-item">Tableau Software</a>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
