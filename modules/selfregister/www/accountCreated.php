@@ -29,7 +29,7 @@
 					<div class="panel-body">
 						<div class="list-group">
 							<a href="https://demo.elipce.com/" class="list-group-item">Portail de démonstration EDS</a>
-							<a href="'https://sso.online.tableau.com/" class="list-group-item">Tableau Software</a>
+							<a href="https://sso.online.tableau.com/" class="list-group-item">Tableau Software</a>
 						</div>
 					</div>
 				</div>
