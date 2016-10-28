@@ -47,8 +47,13 @@ RedirectMatch 302 ^/register$ https://sso.elipce.com/module.php/selfregister/new
 
 #### Configuration générale
 
-*Les fichiers de configuration se trouvent dans `./config`.*
+*Les fichiers de configuration générale se trouve dans le répertoire `config`.*
 
+* Initialiser les fichiers de configuration :
+```
+cp -r config-templates/* config/
+cp -r metadata-templates/* metadata/
+```
 * Générer un hash :
 ```
 ./bin/pwgen.php
@@ -96,11 +101,6 @@ touch ./modules/mon_module/enable
 
 #### Configurer le module d'authentification
 
-* Initialiser les fichiers de configuration :
-```
-cp -r config-templates/* config/
-cp -r metadata-templates/* metadata/
-```
 * Editer le fichier `./config/authsources.php` :
 ```
 <?php
