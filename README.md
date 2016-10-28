@@ -36,7 +36,7 @@ cd /home/__user__/sso & composer update
 ```
 * Générer un certificat SSL :
 ```
- cd /home/letsencrypt & ./letsencrypt-auto
+ /opt/letsencrypt/letsencrypt-auto --apache -d mondomaine.fr -d www.mondomaine.fr
 ```
 * Mettre en place des redirections :
 ```
@@ -96,6 +96,11 @@ touch ./modules/mon_module/enable
 
 #### Configurer le module d'authentification
 
+* Initialiser les fichiers de configuration :
+```
+cp -r config-templates/* config/
+cp -r metadata-templates/* metadata/
+```
 * Editer le fichier `./config/authsources.php` :
 ```
 <?php
